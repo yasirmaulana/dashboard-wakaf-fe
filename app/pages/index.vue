@@ -1,160 +1,90 @@
 <script setup lang="ts">
-import { 
-  TrendingUp, 
-  Package, 
-  Users, 
-  CheckCircle2,
-  Clock,
-  ArrowUpRight
-} from 'lucide-vue-next'
-import Card from '~/components/ui/card/Card.vue'
-import CardHeader from '~/components/ui/card/CardHeader.vue'
-import CardContent from '~/components/ui/card/CardContent.vue'
-import { useAssets } from '~/composables/useAssets'
+import { ShieldCheck, ArrowRight } from 'lucide-vue-next'
 
-const { stats, formatCurrency } = useAssets()
-
-const metrics = [
-  { 
-    label: 'Total Aset', 
-    value: stats.value.totalAssets.toString(), 
-    icon: Package, 
-    color: 'text-blue-500', 
-    bg: 'bg-blue-50',
-    desc: 'Total item terdata'
-  },
-  { 
-    label: 'Nilai Estimasi', 
-    value: formatCurrency(stats.value.totalValue), 
-    icon: TrendingUp, 
-    color: 'text-emerald-500', 
-    bg: 'bg-emerald-50',
-    desc: 'Total valuasi saat ini'
-  },
-  { 
-    label: 'Kondisi Baik', 
-    value: `${stats.value.goodConditionPercent}%`, 
-    icon: CheckCircle2, 
-    color: 'text-amber-500', 
-    bg: 'bg-amber-50',
-    desc: 'Aset berfungsi optimal'
-  },
-  { 
-    label: 'Wakif Aktif', 
-    value: stats.value.activeWakifCount.toString(), 
-    icon: Users, 
-    color: 'text-purple-500', 
-    bg: 'bg-purple-50',
-    desc: 'Jumlah donatur aktif'
-  },
-]
-
-const recentActivities = [
-  { type: 'Update', title: 'Update Status Mitsubishi Pajero', time: '2 jam yang lalu', user: 'Admin' },
-  { type: 'Entry', title: 'Aset Baru: Samsung Tablet S6', time: '5 jam yang lalu', user: 'Sistem' },
-  { type: 'Maintenance', title: 'Servis Kawasaki KLX 150', time: '1 hari yang lalu', user: 'Zaid' },
-]
+definePageMeta({
+  layout: false
+})
 </script>
 
 <template>
-  <div class="space-y-10 animate-in slide-in-from-bottom-6 duration-700">
-    <!-- Welcome Header -->
-    <div class="flex flex-col gap-2">
-      <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Dashboard Overview</h1>
-      <p class="text-muted-foreground font-medium">Monitor dan kelola inventaris wakaf Bilistiwa secara real-time.</p>
-    </div>
-
-    <!-- Metrics Grid -->
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <Card v-for="item in metrics" :key="item.label" class="group rounded-[2rem] border-none shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden bg-white/50 backdrop-blur-sm">
-        <CardContent class="p-8">
-          <div class="flex items-center justify-between pb-4">
-            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{{ item.label }}</p>
-            <div :class="['p-3 rounded-2xl shadow-sm transition-transform group-hover:scale-110 duration-500', item.bg]">
-              <component :is="item.icon" :class="['h-5 w-5', item.color]" />
-            </div>
+  <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 font-sans antialiased">
+    <div class="max-w-md w-full text-center space-y-10 animate-in fade-in zoom-in duration-700">
+      <!-- Icon Container -->
+      <div class="flex justify-center">
+        <div class="relative group">
+          <div class="absolute -inset-4 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
+          <div class="relative w-24 h-24 bg-emerald-600 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-emerald-600/20 transform group-hover:scale-105 transition-transform duration-500">
+            <ShieldCheck class="w-12 h-12 text-white" :stroke-width="2.5" />
           </div>
-          <div class="space-y-1">
-            <div class="text-3xl font-black text-foreground tracking-tighter">{{ item.value }}</div>
-            <p class="text-[11px] font-bold text-muted-foreground/80 flex items-center gap-1">
-              <ArrowUpRight class="h-3 w-3 text-emerald-500" />
-              {{ item.desc }}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- Charts & Activity -->
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-7">
-      <Card class="md:col-span-4 rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm relative group">
-        <div class="absolute top-0 right-0 p-8">
-           <Button variant="ghost" size="icon" class="rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
-             <ArrowUpRight class="h-5 w-5" />
-           </Button>
         </div>
-        <CardHeader class="p-10 pb-0">
-          <div class="space-y-1">
-            <h3 class="text-2xl font-black text-foreground">Sebaran Aset</h3>
-            <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Growth Analytics</p>
-          </div>
-        </CardHeader>
-        <CardContent class="p-10 h-[350px] flex items-center justify-center">
-          <!-- Premium Circular Chart Representation -->
-          <div class="relative h-56 w-56 rounded-full border-[24px] border-primary/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-            <div class="absolute inset-0 rounded-full border-[24px] border-transparent border-t-primary border-r-emerald-500 border-b-amber-500 rotate-12 shadow-inner"></div>
-            <div class="text-center">
-              <span class="text-4xl font-black text-foreground tracking-tighter">152</span>
-              <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Units</p>
-            </div>
-          </div>
-          <div class="ml-16 space-y-5">
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-primary shadow-lg shadow-primary/20"></div>
-               <span class="text-sm font-bold text-foreground/80">Kendaraan (40%)</span>
-             </div>
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-emerald-500 shadow-lg shadow-emerald-200"></div>
-               <span class="text-sm font-bold text-foreground/80">Elektronik (30%)</span>
-             </div>
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-amber-500 shadow-lg shadow-amber-200"></div>
-               <span class="text-sm font-bold text-foreground/80">Properti (30%)</span>
-             </div>
-          </div>
-        </CardContent>
-      </Card>
+      </div>
 
-      <Card class="md:col-span-3 rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col">
-        <CardHeader class="p-10 pb-6 bg-muted/20">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-              <Clock class="h-5 w-5" />
-            </div>
-            <h3 class="text-xl font-black text-foreground tracking-tight">Aktivitas Terbaru</h3>
-          </div>
-        </CardHeader>
-        <CardContent class="p-10 pt-8 flex-1">
-          <div class="space-y-8 relative">
-            <div class="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/50 via-muted/50 to-transparent border-none"></div>
-            <div v-for="(activity, i) in recentActivities" :key="activity.title" class="flex gap-6 relative group">
-              <div :class="['h-4 w-4 rounded-full mt-1 shrink-0 z-10 border-4 border-background transition-transform duration-300 group-hover:scale-125', i === 0 ? 'bg-primary shadow-lg shadow-primary/20' : 'bg-muted-foreground/30']"></div>
-              <div class="flex flex-col space-y-1.5 min-w-0">
-                <p class="text-sm font-bold text-foreground leading-tight group-hover:text-primary transition-colors">{{ activity.title }}</p>
-                <div class="flex items-center gap-3">
-                  <span class="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{{ activity.time }}</span>
-                  <span class="text-[9px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-lg tracking-widest uppercase">{{ activity.user }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button class="w-full mt-10 flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest py-4 px-6 rounded-2xl border-2 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/5">
-            Full Activity Logs
-            <ArrowUpRight class="h-4 w-4" />
-          </button>
-        </CardContent>
-      </Card>
+      <!-- Text Content -->
+      <div class="space-y-4">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Dashboard Wakaf</h1>
+        <div class="space-y-2">
+          <p class="text-slate-500 font-medium text-lg leading-relaxed">
+            Platform tata kelola dan transparansi aset wakaf untuk Nadzir.
+          </p>
+          <p class="text-slate-400 font-medium">
+            Amanah, rapi, dan terpercaya.
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="pt-4 px-4">
+        <NuxtLink 
+          to="/jenis-wakaf"
+          class="group relative inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 shadow-xl shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-1 active:translate-y-0 overflow-hidden"
+        >
+          <span class="relative z-10 flex items-center text-lg">
+            Masuk ke Dashboard
+            <ArrowRight class="ml-3 w-6 h-6 transition-transform duration-300 group-hover:translate-x-1.5" />
+          </span>
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+        </NuxtLink>
+      </div>
+
+      <!-- Footer -->
+      <div class="pt-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100/80 backdrop-blur-sm border border-slate-200/50">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Versi MVP 1.0</span>
+          <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Konteks Demo</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.font-sans {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoom-in {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+.animate-in {
+  animation-fill-mode: forwards;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.zoom-in {
+  animation-name: zoom-in;
+}
+</style>
 
