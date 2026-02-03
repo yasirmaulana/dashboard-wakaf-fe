@@ -10,6 +10,8 @@ import {
 import Card from '~/components/ui/card/Card.vue'
 import CardHeader from '~/components/ui/card/CardHeader.vue'
 import CardContent from '~/components/ui/card/CardContent.vue'
+import Button from '~/components/ui/button/Button.vue'
+import AnalyticsChart from '~/components/dashboard/AnalyticsChart.vue'
 import { useAssets } from '~/composables/useAssets'
 
 const { stats, formatCurrency } = useAssets()
@@ -54,6 +56,37 @@ const recentActivities = [
   { type: 'Entry', title: 'Aset Baru: Samsung Tablet S6', time: '5 jam yang lalu', user: 'Sistem' },
   { type: 'Maintenance', title: 'Servis Kawasaki KLX 150', time: '1 hari yang lalu', user: 'Zaid' },
 ]
+
+// --- Analytics Data ---
+const sebaranData = [
+  { label: 'Kendaraan', percent: 40, color: 'bg-primary', hex: '#3b82f6' },
+  { label: 'Elektronik', percent: 30, color: 'bg-emerald-500', hex: '#10b981' },
+  { label: 'Properti', percent: 30, color: 'bg-amber-500', hex: '#f59e0b' },
+]
+
+const kondisiData = [
+  { label: 'Berfungsi', percent: 75, color: 'bg-primary', hex: '#3b82f6' },
+  { label: 'Rusak', percent: 15, color: 'bg-destructive', hex: '#ef4444' },
+  { label: 'Belum Diketahui', percent: 10, color: 'bg-slate-300', hex: '#cbd5e1' },
+]
+
+const pemeliharaanData = [
+  { label: 'Rutin', percent: 50, color: 'bg-primary', hex: '#3b82f6' },
+  { label: 'Jarang', percent: 25, color: 'bg-amber-500', hex: '#f59e0b' },
+  { label: 'Tidak Pernah', percent: 15, color: 'bg-destructive', hex: '#ef4444' },
+  { label: 'Belum Diketahui', percent: 10, color: 'bg-slate-300', hex: '#cbd5e1' },
+]
+
+const pengelolaanData = [
+  { label: 'Belum Dimanfaatkan', percent: 15, color: 'bg-slate-300', hex: '#cbd5e1' },
+  { label: 'Dalam Perbaikan', percent: 10, color: 'bg-orange-400', hex: '#fb923c' },
+  { label: 'Dibagikan Mustahik', percent: 20, color: 'bg-primary', hex: '#3b82f6' },
+  { label: 'Badan Usaha Wakaf', percent: 10, color: 'bg-blue-500', hex: '#3b82f6' },
+  { label: 'Program Sosial', percent: 20, color: 'bg-emerald-500', hex: '#10b981' },
+  { label: 'Pembiayaan Program', percent: 5, color: 'bg-purple-500', hex: '#a855f7' },
+  { label: 'Dikelola Investasi', percent: 15, color: 'bg-amber-500', hex: '#f59e0b' },
+  { label: 'Rencana Pengembangan', percent: 5, color: 'bg-indigo-400', hex: '#818cf8' },
+]
 </script>
 
 <template>
@@ -61,7 +94,7 @@ const recentActivities = [
     <!-- Welcome Header -->
     <div class="flex flex-col gap-2">
       <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Dashboard Overview</h1>
-      <p class="text-muted-foreground font-medium">Monitor dan kelola inventaris wakaf Bilistiwa secara real-time.</p>
+      <p class="text-muted-foreground font-medium line-clamp-1">Monitor dan kelola inventaris wakaf Bilistiwa secara real-time.</p>
     </div>
 
     <!-- Metrics Grid -->
@@ -85,47 +118,42 @@ const recentActivities = [
       </Card>
     </div>
 
-    <!-- Charts & Activity -->
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-7">
-      <Card class="md:col-span-4 rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm relative group">
-        <div class="absolute top-0 right-0 p-8">
-           <Button variant="ghost" size="icon" class="rounded-2xl hover:bg-primary/5 hover:text-primary transition-all">
-             <ArrowUpRight class="h-5 w-5" />
-           </Button>
-        </div>
-        <CardHeader class="p-10 pb-0">
-          <div class="space-y-1">
-            <h3 class="text-2xl font-black text-foreground">Sebaran Aset</h3>
-            <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Growth Analytics</p>
-          </div>
-        </CardHeader>
-        <CardContent class="p-10 h-[350px] flex items-center justify-center">
-          <!-- Premium Circular Chart Representation -->
-          <div class="relative h-56 w-56 rounded-full border-[24px] border-primary/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-            <div class="absolute inset-0 rounded-full border-[24px] border-transparent border-t-primary border-r-emerald-500 border-b-amber-500 rotate-12 shadow-inner"></div>
-            <div class="text-center">
-              <span class="text-4xl font-black text-foreground tracking-tighter">152</span>
-              <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Units</p>
-            </div>
-          </div>
-          <div class="ml-16 space-y-5">
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-primary shadow-lg shadow-primary/20"></div>
-               <span class="text-sm font-bold text-foreground/80">Kendaraan (40%)</span>
-             </div>
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-emerald-500 shadow-lg shadow-emerald-200"></div>
-               <span class="text-sm font-bold text-foreground/80">Elektronik (30%)</span>
-             </div>
-             <div class="flex items-center gap-3">
-               <div class="w-4 h-4 rounded-lg bg-amber-500 shadow-lg shadow-amber-200"></div>
-               <span class="text-sm font-bold text-foreground/80">Properti (30%)</span>
-             </div>
-          </div>
-        </CardContent>
-      </Card>
+    <!-- Analytics Charts Section -->
+    <div class="grid gap-8 grid-cols-1 lg:grid-cols-2">
+      <AnalyticsChart 
+        title="Sebaran" 
+        subtitle="Asset Distribution" 
+        totalValue="152" 
+        totalLabel="Units" 
+        :data="sebaranData" 
+      />
+      <AnalyticsChart 
+        title="Kondisi" 
+        subtitle="Current Condition" 
+        totalValue="85%" 
+        totalLabel="Ready" 
+        :data="kondisiData" 
+      />
+      <AnalyticsChart 
+        title="Pemeliharaan" 
+        subtitle="Maintenance Status" 
+        totalValue="120" 
+        totalLabel="Checked" 
+        :data="pemeliharaanData" 
+      />
+      <AnalyticsChart 
+        title="Pengelolaan" 
+        subtitle="Management Flow" 
+        totalValue="Active" 
+        totalLabel="Status" 
+        :data="pengelolaanData" 
+        :columns="2"
+      />
+    </div>
 
-      <Card class="md:col-span-3 rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col">
+    <!-- Recent Activity -->
+    <div class="grid gap-8">
+      <Card class="rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col">
         <CardHeader class="p-10 pb-6 bg-muted/20">
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -135,23 +163,33 @@ const recentActivities = [
           </div>
         </CardHeader>
         <CardContent class="p-10 pt-8 flex-1">
-          <div class="space-y-8 relative">
-            <div class="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/50 via-muted/50 to-transparent border-none"></div>
-            <div v-for="(activity, i) in recentActivities" :key="activity.title" class="flex gap-6 relative group">
-              <div :class="['h-4 w-4 rounded-full mt-1 shrink-0 z-10 border-4 border-background transition-transform duration-300 group-hover:scale-125', i === 0 ? 'bg-primary shadow-lg shadow-primary/20' : 'bg-muted-foreground/30']"></div>
-              <div class="flex flex-col space-y-1.5 min-w-0">
-                <p class="text-sm font-bold text-foreground leading-tight group-hover:text-primary transition-colors">{{ activity.title }}</p>
-                <div class="flex items-center gap-3">
-                  <span class="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{{ activity.time }}</span>
-                  <span class="text-[9px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-lg tracking-widest uppercase">{{ activity.user }}</span>
+          <div class="grid md:grid-cols-2 gap-10">
+            <div class="space-y-8 relative">
+              <div class="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/50 via-muted/50 to-transparent border-none"></div>
+              <div v-for="(activity, i) in recentActivities" :key="activity.title" class="flex gap-6 relative group">
+                <div :class="['h-4 w-4 rounded-full mt-1 shrink-0 z-10 border-4 border-background transition-transform duration-300 group-hover:scale-125', i === 0 ? 'bg-primary shadow-lg shadow-primary/20' : 'bg-muted-foreground/30']"></div>
+                <div class="flex flex-col space-y-1.5 min-w-0">
+                  <p class="text-sm font-bold text-foreground leading-tight group-hover:text-primary transition-colors">{{ activity.title }}</p>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{{ activity.time }}</span>
+                    <span class="text-[9px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-lg tracking-widest uppercase">{{ activity.user }}</span>
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="flex flex-col justify-center gap-6">
+              <div class="p-8 rounded-[2rem] bg-primary/5 border border-primary/10">
+                <h4 class="text-sm font-black uppercase tracking-widest text-primary mb-2">Sistem Insights</h4>
+                <p class="text-sm font-medium text-muted-foreground leading-relaxed">
+                  Aktivitas pemeliharaan meningkat 12% dalam seminggu terakhir. Pastikan semua aset strategis tetap dalam kondisi "Berfungsi".
+                </p>
+              </div>
+              <button class="w-full flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest py-4 px-6 rounded-2xl border-2 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/5">
+                Full Activity Logs
+                <ArrowUpRight class="h-4 w-4" />
+              </button>
+            </div>
           </div>
-          <button class="w-full mt-10 flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest py-4 px-6 rounded-2xl border-2 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/5">
-            Full Activity Logs
-            <ArrowUpRight class="h-4 w-4" />
-          </button>
         </CardContent>
       </Card>
     </div>

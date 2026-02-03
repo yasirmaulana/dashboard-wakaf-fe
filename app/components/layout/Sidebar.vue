@@ -14,9 +14,9 @@ const isCollapsed = ref(false)
 
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-  { name: 'Mauquf', icon: Package, path: '/assets' },
-  { name: 'Lokasi', icon: MapPin, path: '/locations' },
   { name: 'Wakif', icon: Users, path: '/wakifs' },
+  { name: 'Mauquf', icon: Package, path: '/assets' },
+  { name: 'Mauquf Alaih', icon: Users, path: '/mauqufalaih' },
 ]
 
 const bottomItems = [

@@ -28,7 +28,7 @@ const steps = [
 const form = reactive({
   // Step 1: Code Generation parts
   location: '01',
-  harta: '02',
+  harta: '01',
   jenis: '01',
   nama: '01',
   semester: '01',
@@ -43,25 +43,73 @@ const form = reactive({
   nilai: 0,
 })
 
-// --- Options Data ---
+// --- Options Data (Hierarchical) ---
+const rawOptions = {
+  harta: [
+    { value: '01', label: 'Uang' },
+    { value: '02', label: 'Harta Bergerak' },
+    { value: '03', label: 'Harta Tidak Bergerak' },
+  ],
+  jenis: [
+    // Uang (01)
+    { value: '01', label: 'wakaf melalui uang', parent: '01' },
+    { value: '02', label: 'wakaf uang', parent: '01' },
+    { value: '03', label: 'wakaf untuk qardh', parent: '01' },
+    // Harta Bergerak (02)
+    { value: '04', label: 'kendaraan', parent: '02' },
+    { value: '05', label: 'sarana dan prasarana', parent: '02' },
+    { value: '06', label: 'saham/royalti', parent: '02' },
+    { value: '07', label: 'menurut UU', parent: '02' },
+    // Harta Tidak Bergerak (03)
+    { value: '08', label: 'tanah', parent: '03' },
+    { value: '09', label: 'bangunan', parent: '03' },
+    { value: '10', label: 'menurut UU', parent: '03' },
+  ],
+  namaProduk: [
+    // Kendaraan (04)
+    { value: '01', label: 'motor', parent: '04' },
+    { value: '02', label: 'mobil', parent: '04' },
+    { value: '03', label: 'sepeda', parent: '04' },
+    { value: '04', label: 'kapal laut', parent: '04' },
+    // Sarana & Prasarana (05)
+    { value: '05', label: 'sarana pendidikan', parent: '05' },
+    { value: '06', label: 'sarana kesehatan', parent: '05' },
+    { value: '07', label: 'peralatan medis', parent: '05' },
+    { value: '08', label: 'peralatan elektronik', parent: '05' },
+    { value: '09', label: 'peralatan komunikasi', parent: '05' },
+    { value: '10', label: 'perangkat lunak', parent: '05' },
+    { value: '11', label: 'peralatan rumah tangga', parent: '05' },
+    { value: '12', label: 'peralatan olahraga', parent: '05' },
+    // Saham/Royalti (06)
+    { value: '13', label: 'saham', parent: '06' },
+    { value: '14', label: 'royalti', parent: '06' },
+    { value: '15', label: 'lembar saham', parent: '06' },
+    // Menurut UU Bergerak (07)
+    { value: '16', label: 'hak pakai hasil', parent: '07' },
+    { value: '17', label: 'piutang', parent: '07' },
+    // Tanah (08)
+    { value: '18', label: 'tanah', parent: '08' },
+    { value: '19', label: 'beli tanah', parent: '08' },
+    // Bangunan (09)
+    { value: '20', label: 'bangunan', parent: '09' },
+    { value: '21', label: 'bahan bangunan', parent: '09' },
+    { value: '22', label: 'perkantoran', parent: '09' },
+    { value: '23', label: 'komersil', parent: '09' },
+    // Uang (01/02/03) - General items
+    { value: '24', label: 'rupiah', parent: '01' },
+    { value: '25', label: 'logam mulia', parent: '02' }, // Usually considered bergerak but often related to money context
+    { value: '26', label: 'valas', parent: '01' },
+    { value: '27', label: 'dinar', parent: '01' },
+    { value: '28', label: 'dirham', parent: '01' },
+  ],
+}
+
+// Fixed data for general options
 const options = {
   locations: [
     { value: '01', label: 'Sukmajaya Kota Depok' },
     { value: '02', label: 'Purwakarta' },
     { value: '03', label: 'Jakarta Timur' },
-  ],
-  harta: [
-    { value: '02', label: 'Harta Bergerak' },
-    { value: '03', label: 'Harta Tidak Bergerak' },
-  ],
-  jenis: [
-    { value: '01', label: 'Kendaraan' },
-    { value: '02', label: 'Sarana & Prasarana' },
-  ],
-  namaProduk: [
-    { value: '01', label: 'Mobil' },
-    { value: '02', label: 'Motor' },
-    { value: '03', label: 'Peralatan Elektronik' },
   ],
   semester: [
     { value: '01', label: 'Jan - Jun' },
@@ -69,6 +117,28 @@ const options = {
   ],
   kondisi: ['Masih Berfungsi', 'Jarang Dirawat', 'Rusak']
 }
+
+// --- Cascading Logic ---
+const filteredJenisOptions = computed(() => {
+  return rawOptions.jenis.filter(opt => opt.parent === form.harta)
+})
+
+const filteredNamaOptions = computed(() => {
+  const byJenis = rawOptions.namaProduk.filter(opt => opt.parent === form.jenis)
+  if (byJenis.length > 0) return byJenis
+  
+  // Fallback to harta-based filtering for certain types (like Uang)
+  return rawOptions.namaProduk.filter(opt => opt.parent === form.harta)
+})
+
+// Reset dependents on change
+watch(() => form.harta, () => {
+  form.jenis = filteredJenisOptions.value[0]?.value || ''
+})
+
+watch(() => form.jenis, () => {
+  form.nama = filteredNamaOptions.value[0]?.value || ''
+})
 
 // --- Live Code Generation ---
 const generatedCode = computed(() => {
@@ -137,7 +207,7 @@ const saveAsset = async () => {
     <!-- Live Preview Code -->
     <Card class="rounded-[2.5rem] border-none bg-gradient-to-br from-primary to-emerald-800 shadow-2xl shadow-primary/20 overflow-hidden relative group">
       <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay"></div>
-      <CardContent class="p-10 relative z-10">
+      <CardContent class="p-4 relative z-10">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div class="space-y-3">
             <div class="flex items-center gap-2">
@@ -178,19 +248,19 @@ const saveAsset = async () => {
             <div class="space-y-3">
               <label class="text-sm font-black uppercase tracking-widest text-muted-foreground ml-1">Macam Harta Wakaf</label>
               <select v-model="form.harta" class="w-full h-14 rounded-2xl border bg-background px-4 text-sm font-bold focus:ring-4 focus:ring-primary/10 hover:border-primary/30 transition-all outline-none appearance-none">
-                <option v-for="opt in options.harta" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                <option v-for="opt in rawOptions.harta" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
             </div>
             <div class="space-y-3">
               <label class="text-sm font-black uppercase tracking-widest text-muted-foreground ml-1">Jenis Mauquf</label>
               <select v-model="form.jenis" class="w-full h-14 rounded-2xl border bg-background px-4 text-sm font-bold focus:ring-4 focus:ring-primary/10 hover:border-primary/30 transition-all outline-none appearance-none">
-                <option v-for="opt in options.jenis" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                <option v-for="opt in filteredJenisOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
             </div>
             <div class="space-y-3">
               <label class="text-sm font-black uppercase tracking-widest text-muted-foreground ml-1">Nama Mauquf</label>
               <select v-model="form.nama" class="w-full h-14 rounded-2xl border bg-background px-4 text-sm font-bold focus:ring-4 focus:ring-primary/10 hover:border-primary/30 transition-all outline-none appearance-none">
-                <option v-for="opt in options.namaProduk" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                <option v-for="opt in filteredNamaOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
             </div>
           </div>

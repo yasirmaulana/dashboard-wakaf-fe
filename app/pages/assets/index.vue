@@ -50,7 +50,7 @@ const getStatusVariant = (status: string) => {
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div class="space-y-1">
         <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Daftar Mauquf</h1>
-        <p class="text-muted-foreground text-sm font-medium">Kelola dan pantau seluruh mauquf Bilistiwa.</p>
+        <p class="text-muted-foreground text-sm font-medium">Kelola dan pantau seluruh mauquf</p>
       </div>
       <NuxtLink to="/assets/create">
         <Button class="gap-2 px-6 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
