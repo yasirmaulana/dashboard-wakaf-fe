@@ -13,7 +13,7 @@ const options = [
     icon: School,
     color: 'text-blue-600',
     bg: 'bg-blue-50',
-    route: '/dashboard'
+    route: '/jenis-wakaf/penggunaan'
   },
   {
     id: 'produktif',
