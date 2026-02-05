@@ -47,33 +47,33 @@ const getStatusVariant = (status: string) => {
 
 <template>
   <div class="space-y-8 animate-in slide-in-from-bottom-6 duration-700">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="space-y-1">
-        <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Daftar Mauquf</h1>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">Daftar Mauquf</h1>
         <p class="text-muted-foreground text-sm font-medium">Kelola dan pantau seluruh mauquf</p>
       </div>
-      <NuxtLink to="/assets/create">
-        <Button class="gap-2 px-6 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
+      <NuxtLink to="/assets/create" class="w-full sm:w-auto">
+        <Button class="w-full sm:w-auto gap-2 px-6 py-4 sm:py-6 rounded-xl sm:rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
           <Plus class="h-5 w-5" />
-          <span class="font-bold">Tambah Mauquf Baru</span>
+          <span class="font-bold text-xs sm:text-sm uppercase sm:normal-case">Tambah Mauquf Baru</span>
         </Button>
       </NuxtLink>
     </div>
 
-    <Card class="rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-card/50 backdrop-blur-sm">
-      <CardHeader class="pb-6 p-8 bg-muted/20">
-        <div class="flex flex-col md:flex-row md:items-center gap-6">
-          <div class="relative flex-1 max-w-md group">
-            <Search class="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+    <Card class="rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-card/50 backdrop-blur-sm">
+      <CardHeader class="pb-6 p-6 sm:p-8 bg-muted/20">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4 sm:gap-6">
+          <div class="relative flex-1 group">
+            <Search class="absolute left-4 top-3 h-4 w-4 sm:h-5 sm:w-5 sm:top-3.5 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input
               v-model="searchQuery"
-              placeholder="Cari mauquf atau kode..."
-              class="pl-12 h-12 rounded-2xl border-none bg-background shadow-inner text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+              placeholder="Cari..."
+              class="pl-10 sm:pl-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl border-none bg-background shadow-inner text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
             />
           </div>
           <select 
             v-model="selectedLocation"
-            class="h-12 rounded-2xl border-none bg-background px-6 text-sm font-bold shadow-sm focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:bg-muted/50 transition-all"
+            class="h-10 sm:h-12 rounded-xl sm:rounded-2xl border-none bg-background px-4 sm:px-6 text-sm font-bold shadow-sm focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:bg-muted/50 transition-all"
           >
             <option>Semua Lokasi</option>
             <option>Depok</option>
@@ -81,9 +81,10 @@ const getStatusVariant = (status: string) => {
           </select>
         </div>
       </CardHeader>
-      <CardContent class="p-8">
-        <div class="rounded-3xl border border-muted/50 overflow-hidden bg-background">
-          <Table>
+      <CardContent class="p-4 sm:p-8">
+        <div class="rounded-2xl sm:rounded-3xl border border-muted/50 overflow-hidden bg-background">
+          <div class="overflow-x-auto">
+            <Table class="min-w-[600px] lg:min-w-full">
             <TableHeader>
               <TableRow class="bg-muted/30 hover:bg-muted/30 border-none h-14">
                 <TableHead class="pl-8 font-bold text-xs uppercase tracking-widest text-muted-foreground">Kode Inventaris</TableHead>
@@ -114,6 +115,7 @@ const getStatusVariant = (status: string) => {
               </TableRow>
             </TableBody>
           </Table>
+          </div>
         </div>
         
         <div v-if="filteredAssets.length === 0" class="py-32 text-center animate-in fade-in zoom-in duration-500">

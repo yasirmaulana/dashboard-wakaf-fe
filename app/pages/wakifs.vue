@@ -78,41 +78,42 @@ const filteredWakifs = computed(() => {
 <template>
   <div class="space-y-8 animate-in slide-in-from-bottom-6 duration-700">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="space-y-1">
-        <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Daftar Wakif</h1>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">Daftar Wakif</h1>
         <p class="text-muted-foreground text-sm font-medium">Kelola data wakif secara terpusat dan sistematis.</p>
       </div>
-      <Button class="gap-2 px-6 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
+      <Button class="w-full sm:w-auto gap-2 px-6 py-4 sm:py-6 rounded-xl sm:rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
         <Plus class="h-5 w-5" />
-        <span class="font-bold uppercase tracking-widest text-[10px]">Tambah Wakif Baru</span>
+        <span class="font-bold uppercase tracking-widest text-[9px] sm:text-[10px]">Tambah Wakif Baru</span>
       </Button>
     </div>
 
     <!-- Main Card -->
-    <Card class="rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
-      <CardHeader class="pb-6 p-8 bg-muted/20">
-        <div class="flex flex-col md:flex-row md:items-center gap-6">
-          <div class="relative flex-1 max-w-md group">
-            <Search class="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+    <Card class="rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
+      <CardHeader class="pb-6 p-6 sm:p-8 bg-muted/20">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4 sm:gap-6">
+          <div class="relative flex-1 group">
+            <Search class="absolute left-4 top-3 h-4 w-4 sm:h-5 sm:w-5 sm:top-3.5 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input 
               v-model="searchQuery"
-              placeholder="Cari nama, NIK, atau alamat wakif..." 
-              class="pl-12 h-12 rounded-2xl border-none bg-background shadow-inner text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+              placeholder="Cari..." 
+              class="pl-10 sm:pl-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl border-none bg-background shadow-inner text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
             />
           </div>
-          <div class="flex gap-4 items-center ml-auto">
-             <div class="px-4 py-2 rounded-xl bg-emerald-100/50 border border-emerald-200/50 h-12 flex items-center gap-3">
-               <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">Total Wakif</span>
-               <span class="text-lg font-black text-emerald-700 leading-none">{{ wakifs.length }}</span>
+          <div class="flex gap-4 items-center sm:ml-auto">
+             <div class="px-3 sm:px-4 py-2 rounded-xl bg-emerald-100/50 border border-emerald-200/50 h-10 sm:h-12 flex items-center gap-2 sm:gap-3">
+               <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-emerald-600/70">Total</span>
+               <span class="text-base sm:text-lg font-black text-emerald-700 leading-none">{{ wakifs.length }}</span>
              </div>
           </div>
         </div>
       </CardHeader>
       
-      <CardContent class="p-8">
-        <div class="rounded-3xl border border-muted/50 overflow-hidden bg-background">
-          <Table>
+      <CardContent class="p-4 sm:p-8">
+        <div class="rounded-2xl sm:rounded-3xl border border-muted/50 overflow-hidden bg-background">
+          <div class="overflow-x-auto">
+            <Table class="min-w-[800px] lg:min-w-full">
             <TableHeader>
               <TableRow class="bg-muted/30 hover:bg-muted/30 border-none h-14">
                 <TableHead class="pl-8 font-bold text-xs uppercase tracking-widest text-muted-foreground">Tipe</TableHead>
@@ -186,6 +187,7 @@ const filteredWakifs = computed(() => {
               </TableRow>
             </TableBody>
           </Table>
+          </div>
         </div>
 
         <!-- Empty State -->

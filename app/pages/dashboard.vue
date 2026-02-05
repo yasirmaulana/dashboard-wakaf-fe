@@ -90,26 +90,26 @@ const pengelolaanData = [
 </script>
 
 <template>
-  <div class="space-y-10 animate-in slide-in-from-bottom-6 duration-700">
+  <div class="space-y-6 sm:space-y-10 animate-in slide-in-from-bottom-6 duration-700">
     <!-- Welcome Header -->
-    <div class="flex flex-col gap-2">
-      <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Dashboard Overview</h1>
-      <p class="text-muted-foreground font-medium line-clamp-1">Monitor dan kelola inventaris wakaf Bilistiwa secara real-time.</p>
+    <div class="flex flex-col gap-1 sm:gap-2">
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">Dashboard Overview</h1>
+      <p class="text-sm sm:text-base text-muted-foreground font-medium line-clamp-1">Monitor dan kelola inventaris wakaf secara real-time.</p>
     </div>
 
     <!-- Metrics Grid -->
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <Card v-for="item in metrics" :key="item.label" class="group rounded-[2rem] border-none shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden bg-white/50 backdrop-blur-sm">
-        <CardContent class="p-8">
-          <div class="flex items-center justify-between pb-4">
-            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{{ item.label }}</p>
-            <div :class="['p-3 rounded-2xl shadow-sm transition-transform group-hover:scale-110 duration-500', item.bg]">
-              <component :is="item.icon" :class="['h-5 w-5', item.color]" />
+    <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <Card v-for="item in metrics" :key="item.label" class="group rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden bg-white/50 backdrop-blur-sm">
+        <CardContent class="p-6 sm:p-8">
+          <div class="flex items-center justify-between pb-3 sm:pb-4">
+            <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{{ item.label }}</p>
+            <div :class="['p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-sm transition-transform group-hover:scale-110 duration-500', item.bg]">
+              <component :is="item.icon" :class="['h-4 w-4 sm:h-5 sm:w-5', item.color]" />
             </div>
           </div>
           <div class="space-y-1">
-            <div class="text-3xl font-black text-foreground tracking-tighter">{{ item.value }}</div>
-            <p class="text-[11px] font-bold text-muted-foreground/80 flex items-center gap-1">
+            <div class="text-2xl sm:text-3xl font-black text-foreground tracking-tighter">{{ item.value }}</div>
+            <p class="text-[10px] sm:text-[11px] font-bold text-muted-foreground/80 flex items-center gap-1">
               <ArrowUpRight class="h-3 w-3 text-emerald-500" />
               {{ item.desc }}
             </p>
@@ -152,18 +152,18 @@ const pengelolaanData = [
     </div>
 
     <!-- Recent Activity -->
-    <div class="grid gap-8">
-      <Card class="rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col">
-        <CardHeader class="p-10 pb-6 bg-muted/20">
+    <div class="grid gap-6 sm:gap-8">
+      <Card class="rounded-[1.5rem] sm:rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col">
+        <CardHeader class="p-6 sm:p-10 pb-4 sm:pb-6 bg-muted/20">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-              <Clock class="h-5 w-5" />
+            <div class="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <Clock class="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <h3 class="text-xl font-black text-foreground tracking-tight">Aktivitas Terbaru</h3>
+            <h3 class="text-lg sm:text-xl font-black text-foreground tracking-tight">Aktivitas Terbaru</h3>
           </div>
         </CardHeader>
-        <CardContent class="p-10 pt-8 flex-1">
-          <div class="grid md:grid-cols-2 gap-10">
+        <CardContent class="p-6 sm:p-10 pt-6 sm:pt-8 flex-1">
+          <div class="grid lg:grid-cols-2 gap-8 sm:gap-10">
             <div class="space-y-8 relative">
               <div class="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/50 via-muted/50 to-transparent border-none"></div>
               <div v-for="(activity, i) in recentActivities" :key="activity.title" class="flex gap-6 relative group">
@@ -177,16 +177,16 @@ const pengelolaanData = [
                 </div>
               </div>
             </div>
-            <div class="flex flex-col justify-center gap-6">
-              <div class="p-8 rounded-[2rem] bg-primary/5 border border-primary/10">
-                <h4 class="text-sm font-black uppercase tracking-widest text-primary mb-2">Sistem Insights</h4>
-                <p class="text-sm font-medium text-muted-foreground leading-relaxed">
+            <div class="flex flex-col justify-center gap-4 sm:gap-6">
+              <div class="p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-primary/5 border border-primary/10">
+                <h4 class="text-xs sm:text-sm font-black uppercase tracking-widest text-primary mb-2">Sistem Insights</h4>
+                <p class="text-xs sm:text-sm font-medium text-muted-foreground leading-relaxed">
                   Aktivitas pemeliharaan meningkat 12% dalam seminggu terakhir. Pastikan semua aset strategis tetap dalam kondisi "Berfungsi".
                 </p>
               </div>
-              <button class="w-full flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest py-4 px-6 rounded-2xl border-2 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/5">
+              <button class="w-full flex items-center justify-center gap-3 text-[10px] sm:text-xs font-black uppercase tracking-widest py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl border-2 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/5">
                 Full Activity Logs
-                <ArrowUpRight class="h-4 w-4" />
+                <ArrowUpRight class="h-3 w-3 sm:h-4 sm:w-4" />
               </button>
             </div>
           </div>

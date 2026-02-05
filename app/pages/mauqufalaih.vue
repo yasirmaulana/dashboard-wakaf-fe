@@ -141,38 +141,39 @@ const deleteRow = async (id: number) => {
 <template>
   <div class="space-y-8 animate-in slide-in-from-bottom-6 duration-700">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="space-y-1">
-        <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Mauquf Alaih</h1>
-        <p class="text-muted-foreground text-sm font-medium">Kelola data penerima manfaat dari aset wakaf yang dikelola.</p>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">Mauquf Alaih</h1>
+        <p class="text-muted-foreground text-sm font-medium">Kelola data penerima manfaat secara terpusat.</p>
       </div>
       <Button 
-        class="gap-2 px-6 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
+        class="w-full sm:w-auto gap-2 px-6 py-4 sm:py-6 rounded-xl sm:rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
         @click="openAddForm"
         v-if="!showForm"
       >
         <Plus class="h-5 w-5" />
-        <span class="font-bold uppercase tracking-widest text-[10px]">Tambah Penerima Baru</span>
+        <span class="font-bold uppercase tracking-widest text-[9px] sm:text-[10px]">Tambah Penerima Baru</span>
       </Button>
     </div>
 
     <!-- Main Card & Search -->
+    <!-- Main Card & Search -->
     <div class="space-y-6">
-        <Card v-if="!showForm" class="rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
-            <CardHeader class="pb-6 p-8 bg-muted/20">
-                <div class="flex flex-col md:flex-row md:items-center gap-6">
-                    <div class="relative flex-1 max-w-md group">
-                        <Search class="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
+        <Card v-if="!showForm" class="rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
+            <CardHeader class="pb-6 p-6 sm:p-8 bg-muted/20">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-4 sm:gap-6">
+                    <div class="relative flex-1 group">
+                        <Search class="absolute left-4 top-3 h-4 w-4 sm:h-5 sm:w-5 sm:top-3.5 text-muted-foreground transition-colors group-focus-within:text-primary" />
                         <Input 
                             v-model="searchQuery"
-                            placeholder="Cari nama atau kontak penerima..." 
-                            class="pl-12 h-12 rounded-2xl border-none bg-background shadow-inner text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+                            placeholder="Cari..." 
+                            class="pl-10 sm:pl-12 h-10 sm:h-12 rounded-xl sm:rounded-2xl border-none bg-background shadow-inner text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
                         />
                     </div>
-                    <div class="flex gap-4 items-center ml-auto">
-                        <div class="px-4 py-2 rounded-xl bg-primary/5 border border-primary/10 h-12 flex items-center gap-3">
-                            <span class="text-[10px] font-black uppercase tracking-widest text-primary/70">Total Penerima</span>
-                            <span class="text-lg font-black text-primary leading-none">{{ beneficiaries.length }}</span>
+                    <div class="flex gap-4 items-center sm:ml-auto">
+                        <div class="px-3 sm:px-4 py-2 rounded-xl bg-primary/5 border border-primary/10 h-10 sm:h-12 flex items-center gap-2 sm:gap-3">
+                            <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary/70">Total</span>
+                            <span class="text-base sm:text-lg font-black text-primary leading-none">{{ beneficiaries.length }}</span>
                         </div>
                     </div>
                 </div>
@@ -187,7 +188,7 @@ const deleteRow = async (id: number) => {
                 </template>
                 <template v-else>
                     <div class="overflow-x-auto">
-                        <Table>
+                        <Table class="min-w-[700px] lg:min-w-full">
                             <TableHeader>
                                 <TableRow class="bg-muted/30 hover:bg-muted/30 border-none h-14">
                                     <TableHead class="pl-8 font-bold text-xs uppercase tracking-widest text-muted-foreground">Tipe</TableHead>
@@ -263,42 +264,42 @@ const deleteRow = async (id: number) => {
         </Card>
 
         <!-- Dynamic Form (Add/Edit) -->
-        <Card v-if="showForm" class="mt-8 rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
-            <CardHeader class="p-8 pb-4">
-                <h3 class="text-xl font-black text-foreground">{{ isEditing ? 'Edit Penerima' : 'Tambah Penerima Baru' }}</h3>
+        <Card v-if="showForm" class="mt-8 rounded-[1.5rem] sm:rounded-[2.5rem] border-none shadow-2xl shadow-slate-200/50 overflow-hidden bg-white/50 backdrop-blur-sm">
+            <CardHeader class="p-6 sm:p-8 pb-4">
+                <h3 class="text-lg sm:text-xl font-black text-foreground">{{ isEditing ? 'Edit Penerima' : 'Tambah Penerima Baru' }}</h3>
             </CardHeader>
-            <CardContent class="p-8 pt-0">
-                <form @submit.prevent="saveRow" class="space-y-6">
-                    <div class="grid md:grid-cols-2 gap-6">
+            <CardContent class="p-6 sm:p-8 pt-0">
+                <form @submit.prevent="saveRow" class="space-y-4 sm:space-y-6">
+                    <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
                         <div class="space-y-2">
-                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground">Nama Penerima</label>
-                            <Input v-model="formData.name" required placeholder="Masukkan nama..." class="rounded-xl border-none bg-muted/30 h-12" />
+                            <label class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground">Nama Penerima</label>
+                            <Input v-model="formData.name" required placeholder="Masukkan nama..." class="rounded-xl border-none bg-muted/30 h-11 sm:h-12" />
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground">Tipe</label>
-                            <select v-model="formData.type" class="w-full h-12 px-4 rounded-xl border-none bg-muted/30 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                            <label class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground">Tipe</label>
+                            <select v-model="formData.type" class="w-full h-11 sm:h-12 px-4 rounded-xl border-none bg-muted/30 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                                 <option value="Personal">Personal</option>
                                 <option value="Lembaga">Lembaga</option>
                             </select>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground">Kategori</label>
-                            <Input v-model="formData.category" required placeholder="Pendidikan, Sosial, dsb..." class="rounded-xl border-none bg-muted/30 h-12" />
+                            <label class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground">Kategori</label>
+                            <Input v-model="formData.category" required placeholder="Pendidikan, Sosial, dsb..." class="rounded-xl border-none bg-muted/30 h-11 sm:h-12" />
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground">Email / Kontak</label>
-                            <Input v-model="formData.contactBeneficiary" required placeholder="email@example.com" class="rounded-xl border-none bg-muted/30 h-12" />
+                            <label class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground">Email / Kontak</label>
+                            <Input v-model="formData.contactBeneficiary" required placeholder="email@example.com" class="rounded-xl border-none bg-muted/30 h-11 sm:h-12" />
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-black uppercase tracking-widest text-muted-foreground">Telepon</label>
-                            <Input v-model="formData.phone" required placeholder="08..." class="rounded-xl border-none bg-muted/30 h-12" />
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-muted-foreground">Telepon</label>
+                            <Input v-model="formData.phone" required placeholder="08..." class="rounded-xl border-none bg-muted/30 h-11 sm:h-12" />
                         </div>
                     </div>
-                    <div class="flex justify-end gap-3 mt-6">
-                        <Button type="button" variant="ghost" @click="showForm = false" class="rounded-xl font-bold">Batal</Button>
-                        <Button type="submit" class="rounded-xl font-bold px-8 h-12 shadow-lg shadow-primary/20">
+                    <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+                        <Button type="button" variant="ghost" @click="showForm = false" class="rounded-xl font-bold order-2 sm:order-1">Batal</Button>
+                        <Button type="submit" class="rounded-xl font-bold px-8 h-12 shadow-lg shadow-primary/20 order-1 sm:order-2">
                             <Loader2 v-if="isLoading" class="h-4 w-4 animate-spin mr-2" />
-                            {{ isEditing ? 'Simpan Perubahan' : 'Tambah Penerima' }}
+                            {{ isEditing ? 'Simpan' : 'Tambah' }}
                         </Button>
                     </div>
                 </form>
