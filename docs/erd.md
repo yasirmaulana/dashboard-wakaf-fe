@@ -32,7 +32,11 @@ erDiagram
     WAQF_ASSETS ||--o{ ASSET_MANAGEMENT : "monitored by"
     WAQF_ASSETS ||--o{ ASSET_MEDIA : "has photos"
 
-    WAQF_ASSETS ||--o{ PRODUCTIVE_DISTRIBUTIONS : "generates (for Produktif)"
+    %% Productive Waqf Flow
+    WAQF_ASSETS ||--o{ PRODUCTIVE_BUSINESSES : "capitalizes"
+    PRODUCTIVE_BUSINESSES ||--o{ FINANCIAL_REPORTS : "generates"
+    FINANCIAL_REPORTS ||--o{ BENEFIT_DISTRIBUTIONS : "allocates"
+    MAUQUF_ALAIH ||--o{ BENEFIT_DISTRIBUTIONS : "receives distribution"
 ```
 
 ## Recommended Tables (PostgreSQL)
@@ -146,12 +150,48 @@ This table consolidates the spreadsheet data.
 - `file_url`: VARCHAR
 - `captured_at`: TIMESTAMP
 
-### 6. Productive Waqf Add-ons
+---
 
-#### `productive_distributions` (New)
-For "Wakaf Produktif", track how profits are shared.
+## 6. Detail Wakaf Produktif (Productive Waqf)
+
+Bagian ini menjelaskan alur ekonomi dari aset wakaf yang dikelola menjadi usaha produktif.
+
+### `productive_businesses` (Usaha_Produktif)
+Menyimpan data unit usaha yang menggunakan modal/aset wakaf.
 - `id`: UUID (PK)
-- `asset_id`: UUID (FK)
-- `amount`: NUMERIC
-- `period`: VARCHAR
+- `asset_id`: UUID (FK to waqf_assets) -- Aset yang dijadikan modal.
+- `business_name`: VARCHAR(255) -- Nama unit usaha.
+- `business_type`: VARCHAR(100) -- e.g., Pertanian, Retail, Properti.
+- `status`: ENUM('active', 'inactive', 'closed')
+- `manager_name`: VARCHAR(255) -- Penanggung jawab operasional usaha.
+- `start_date`: DATE
+
+### `financial_reports` (Laporan_Keuangan_Berkala)
+Laporan performa keuangan dari unit usaha produktif.
+- `id`: UUID (PK)
+- `business_id`: UUID (FK to productive_businesses)
+- `report_period`: VARCHAR(50) -- e.g., "Januari 2024", "Q1 2024".
+- `total_revenue`: NUMERIC -- Total Pendapatan.
+- `total_expense`: NUMERIC -- Total Biaya Operasional.
+- `net_profit`: NUMERIC -- Laba Bersih (Surplus Wakaf).
+- `report_date`: DATE
+- `document_url`: VARCHAR -- Link ke file laporan detail (PDF).
+
+### `benefit_distributions` (Distribusi_Manfaat)
+Penyaluran surplus wakaf kepada penerima manfaat (Mauquf Alaih).
+- `id`: UUID (PK)
+- `report_id`: UUID (FK to financial_reports) -- Dasar distribusi.
+- `mauquf_alaih_id`: UUID (FK to mauquf_alaih) -- Penerima.
+- `amount`: NUMERIC -- Jumlah yang disalurkan.
+- `distribution_date`: DATE
+- `distribution_method`: VARCHAR -- e.g., Transfer, Tunai, Barang.
 - `notes`: TEXT
+
+---
+
+## Struktur Hubungan (Relationship Summary)
+
+1.  **Aset ke Usaha**: Hubungan **1:N** (*Satu aset bisa digunakan untuk satu atau lebih unit usaha produktif*).
+2.  **Usaha ke Laporan**: Hubungan **1:N** (*Satu unit usaha menghasilkan banyak laporan keuangan berkala*).
+3.  **Laporan ke Distribusi**: Hubungan **1:N** (*Satu laporan laba dapat didistribusikan ke banyak Mauquf Alaih*).
+4.  **Mauquf Alaih ke Distribusi**: Hubungan **1:N** (*Satu penerima manfaat dapat menerima banyak kali distribusi dari berbagai laporan/unit usaha*).
