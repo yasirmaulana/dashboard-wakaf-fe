@@ -16,9 +16,14 @@ This document outlines the database schema for the Nazhir/Wakaf system, covering
 ```mermaid
 erDiagram
     ROLES ||--o{ USERS : "has"
-    USERS ||--o| WAKIFS : "profile"
     USERS ||--o| NAZHIRS : "profile"
     USERS ||--o| MAUQUF_ALAIH : "profile"
+
+    %% Wakif & Collective Relationship
+    USERS ||--o| WAKIFS : "personal profile"
+    WAKIFS ||--o{ WAKIF_MEMBERS : "contains"
+    USERS ||--o{ WAKIF_MEMBERS : "member of (if Kolektif)"
+    WAKIFS ||--o| USERS : "represented by (if Kolektif)"
 
     ASSET_CATEGORIES ||--o{ ASSET_TYPES : "contains"
     ASSET_TYPES ||--o{ ASSET_ITEMS : "contains"
@@ -55,14 +60,25 @@ Core user table.
 - `password`: VARCHAR(255)
 - `role_id`: UUID (FK to roles)
 
-### 2. Stakeholder Profiles
+### 2. Stakeholder Profiles (Wakif Personal & Kolektif)
 
 #### `wakifs`
-Profile for the donor. 
+Tabel profil untuk donatur. Tabel ini menghandle kondisi **Personal** dan **Kolektif**.
+
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `id` | UUID (PK) | Unique identifier |
+| `name` | VARCHAR(255) | Nama individu (Personal) atau Nama Kelompok (Kolektif) |
+| `wakif_type` | ENUM | **'personal'** atau **'collective'** |
+| `representative_id`| UUID (FK) | Relasi ke `users`. Jika 'kolektif', maka ini adalah PIC kelompok |
+| `created_at` | TIMESTAMP | Waktu pendaftaran |
+
+#### `wakif_members` (New)
+Tabel opsional untuk melacak individu anggota dalam sebuah kelompok (Kolektif).
 - `id`: UUID (PK)
-- `user_id`: UUID (FK to users, Nullable)
-- `name`: VARCHAR(255)
-- `wakif_type`: ENUM('personal', 'collective')
+- `wakif_id`: UUID (FK to wakifs) -- Relasi ke entity kolektif.
+- `user_id`: UUID (FK to users) -- Relasi ke individu yang menjadi anggota.
+- `role_in_group`: VARCHAR(100) -- e.g., Ketua, Anggota, Bendahara.
 
 #### `nazhirs`
 Profile for the manager.
