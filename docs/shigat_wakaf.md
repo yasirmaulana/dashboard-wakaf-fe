@@ -2,51 +2,41 @@
 
 Dokumen ini memberikan panduan khusus untuk pengelolaan data **Shigat** (Akad/Lafadz Wakaf) dalam sistem.
 
-## Apa itu Shigat?
-Shigat adalah pernyataan kehendak dari Wakif (pemberi wakaf) yang diucapkan atau dituliskan saat proses penyerahan harta wakaf. Dalam sistem database, elemen ini kritikal untuk menentukan legalitas dan tujuan penggunaan harta.
-
-## Struktur Tabel Shigat
+## Struktur Tabel Shigat (Updated)
 
 ```sql
 CREATE TABLE asset_shigat (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    asset_id UUID NOT NULL REFERENCES waqf_assets(id),
+    -- Primary Key menggunakan INT Auto-increment
+    id SERIAL PRIMARY KEY, 
+    
+    -- Relasi ke aset inti
+    asset_id INT NOT NULL REFERENCES waqf_assets(id),
     
     -- Teks akad
     lafadz_text TEXT NOT NULL, 
     
-    -- Tujuan khusus sesuai akad (Sangat Penting)
+    -- Tujuan khusus sesuai akad (Amanah Wakif)
     intended_use_shigat TEXT, 
     
     -- Bukti fisik/digital
-    document_type VARCHAR(50), -- Akad Tertulis, Akta Ikrar Wakaf (AIW), dll
-    document_url VARCHAR(255),  -- Link ke file PDF/Foto sertifikat
+    document_type VARCHAR(50), -- AIW, Sertifikat, dll
+    document_url VARCHAR(255),  -- Link ke file PDF/Foto
     
     -- Metadata
-    witness_names TEXT,        -- Nama saksi-saksi jika ada
-    agreement_date DATE,       -- Tanggal akad
+    agreement_date DATE,       
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-## Komponen Penting dalam Antarmuka (UI)
+## Mengapa Shigat Penting untuk Wakaf Produktif?
 
-Saat Admin atau Nazhir menginput data Shigat, elemen berikut harus tersedia:
-
-1.  **Input Text (Lafadz)**: Area teks yang luas untuk menyalin kalimat akad dari Wakif.
-2.  **Upload Center**: Komponen untuk mengunggah scan sertifikat atau foto saat akad berlangsung.
-3.  **Dropdown Status Dokumen**:
-    -   *AIW/PPAIW* (Akta Ikrar Wakaf)
-    -   *Sertifikat Tanah Wakaf*
-    -   *Surat Pernyataan Wakif* (Untuk harta bergerak seperti kendaraan/laptop)
-4.  **Date Picker**: Tanggal diwakafkan yang harus sinkron dengan data di tabel utama `waqf_assets`.
-
-## Keterkaitan dengan "Wakaf Penggunaan" vs "Produktif"
-
--   **Wakaf Penggunaan**: Shigat biasanya menentukan fasilitas mana yang akan dibangun atau siapa yang boleh menggunakan barang tersebut (Contoh: "Motor ini digunakan untuk operasional Madrasah").
--   **Wakaf Produktif**: Shigat biasanya memberikan mandat kepada Nazhir untuk mengembangkan harta tersebut secara ekonomi (Contoh: "Tanah ini dikelola sebagai ruko, hasilnya untuk beasiswa").
+Walaupun Wakaf Produktif berorientasi ekonomi, peruntukan hasilnya (surplus) tetap harus mengikuti Shigat awal. 
+Contoh: 
+- **Aset**: Ruko (Produktif).
+- **Shigat**: "Hasil sewa ruko ini untuk operasional panti asuhan."
+- **Sistem**: Tabel `benefit_distributions` harus memvalidasi bahwa `mauquf_alaih_id` yang menerima dana sesuai dengan mandat di tabel `asset_shigat`.
 
 > [!IMPORTANT]
-> Sistem harus memastikan bahwa `intended_use_shigat` tidak diubah setelah diverifikasi, karena ini adalah amanah Wakif yang memiliki kekuatan hukum syariah dan negara.
+> Konsistensi antara pilar **Shigat** dan **Penyaluran Manfaat** adalah kunci dari kepatuhan syariah dan legalitas sistem ini.

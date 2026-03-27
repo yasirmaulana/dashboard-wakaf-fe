@@ -1,212 +1,175 @@
-# Entity Relationship Diagram (ERD) - Wakaf Management System
+# Entity Relationship Diagram (ERD) - Sistem Manajemen Wakaf
 
-This document outlines the database schema for the Nazhir/Wakaf system, covering both **Wakaf Penggunaan** (Use-based) and **Wakaf Produktif** (Productive).
+Dokumen ini menjelaskan struktur database untuk sistem pengelolaan Wakaf, mencakup **Wakaf Pemakaian** dan **Wakaf Produktif** dengan desain simetris dan terstandarisasi.
 
-## Role-Based Access Control (RBAC)
-
-| Role | Access Level | Description |
-| :--- | :--- | :--- |
-| **Admin** | Full Access | Manage all users, roles, system configurations, and auditing. |
-| **Nazhir** | Management | Manage assets, update conditions, file reports, and track distributions. |
-| **Wakif** | View-Only / Reporting | Track their donated assets, view impact reports, and transaction history. |
-| **Mauquf 'alaih** | Restricted View | View assets they are benefiting from and potentially request maintenance. |
+## Pillar Utama Wakaf (Symmetrical Pillars)
+Sistem ini dibangun di atas 5 pilar utama yang berlaku baik untuk jenis Pemakaian maupun Produktif:
+1. **Nazhir** (Pengelola)
+2. **Wakif** (Pemberi)
+3. **Mauquf** (Harta/Asset)
+4. **Mauquf Alaih** (Penerima Manfaat)
+5. **Shigat** (Akad/Janji)
 
 ## Entity Relationship Diagram (Mermaid)
 
 ```mermaid
 erDiagram
-    ROLES ||--o{ USERS : "has"
+    ROLES ||--o{ USERS : "memiliki"
 
-    %% Pattern: Stakeholder Group/Member Mapping
-    USERS ||--o| WAKIFS : "personal profile"
-    WAKIFS ||--o{ WAKIF_MEMBERS : "has members"
-    USERS ||--o{ WAKIF_MEMBERS : "member of (if Kolektif)"
-    WAKIFS ||--o| USERS : "represented by (if Kolektif)"
+    %% Stakeholder Patterns (Individual & Group)
+    USERS ||--o| WAKIFS : "profil personal"
+    WAKIFS ||--o{ WAKIF_MEMBERS : "memiliki anggota"
+    USERS ||--o{ WAKIF_MEMBERS : "anggota dari"
 
-    USERS ||--o| NAZHIRS : "personal profile"
-    NAZHIRS ||--o{ NAZHIR_MEMBERS : "has staff"
-    USERS ||--o{ NAZHIR_MEMBERS : "staff of (if Org)"
-    NAZHIRS ||--o| USERS : "represented by (if Org)"
+    USERS ||--o| NAZHIRS : "profil personal"
+    NAZHIRS ||--o{ NAZHIR_MEMBERS : "memiliki staf"
+    USERS ||--o{ NAZHIR_MEMBERS : "staf dari"
 
-    USERS ||--o| MAUQUF_ALAIH : "personal profile"
-    MAUQUF_ALAIH ||--o{ MAUQUF_MEMBERS : "has members"
-    USERS ||--o{ MAUQUF_MEMBERS : "member of (if Group)"
-    MAUQUF_ALAIH ||--o| USERS : "represented by (if Group)"
+    USERS ||--o| MAUQUF_ALAIH : "profil personal"
+    MAUQUF_ALAIH ||--o{ MAUQUF_MEMBERS : "memiliki anggota"
+    USERS ||--o{ MAUQUF_MEMBERS : "anggota dari"
 
-    ASSET_CATEGORIES ||--o{ ASSET_TYPES : "contains"
-    ASSET_TYPES ||--o{ ASSET_ITEMS : "contains"
+    ASSET_CATEGORIES ||--o{ ASSET_TYPES : "kategori"
+    ASSET_TYPES ||--o{ ASSET_ITEMS : "jenis"
     
-    ASSET_ITEMS ||--o{ WAQF_ASSETS : "is type of"
-    WAKIFS ||--o{ WAQF_ASSETS : "donates"
-    NAZHIRS ||--o{ WAQF_ASSETS : "manages"
-    MAUQUF_ALAIH ||--o{ WAQF_ASSETS : "receives benefit"
+    ASSET_ITEMS ||--o{ WAQF_ASSETS : "tipe aset"
+    WAKIFS ||--o{ WAQF_ASSETS : "mewakafkan"
+    NAZHIRS ||--o{ WAQF_ASSETS : "mengelola"
+    MAUQUF_ALAIH ||--o{ WAQF_ASSETS : "menerima manfaat"
 
-    WAQF_ASSETS ||--|| ASSET_SHIGAT : "has"
-    WAQF_ASSETS ||--o{ ASSET_MANAGEMENT : "monitored by"
-    WAQF_ASSETS ||--o{ ASSET_MEDIA : "has photos"
+    WAQF_ASSETS ||--|| ASSET_SHIGAT : "memiliki"
+    WAQF_ASSETS ||--o{ ASSET_MANAGEMENT : "dimonitor"
+    WAQF_ASSETS ||--o{ ASSET_MEDIA : "dokumentasi"
 
-    %% Productive Waqf Flow
-    WAQF_ASSETS ||--o{ PRODUCTIVE_BUSINESSES : "capitalizes"
-    PRODUCTIVE_BUSINESSES ||--o{ FINANCIAL_REPORTS : "generates"
-    FINANCIAL_REPORTS ||--o{ BENEFIT_DISTRIBUTIONS : "allocates"
-    MAUQUF_ALAIH ||--o{ BENEFIT_DISTRIBUTIONS : "receives distribution"
+    %% Alur Wakaf Produktif & Cabang
+    WAQF_ASSETS ||--o{ PRODUCTIVE_BUSINESSES : "dijadikan modal"
+    PRODUCTIVE_BUSINESSES ||--o{ PRODUCTIVE_BUSINESSES : "memiliki cabang (parent_id)"
+    PRODUCTIVE_BUSINESSES ||--o{ FINANCIAL_REPORTS : "menghasilkan"
+    FINANCIAL_REPORTS ||--o{ BENEFIT_DISTRIBUTIONS : "mengalokasikan"
+    MAUQUF_ALAIH ||--o{ BENEFIT_DISTRIBUTIONS : "menerima bagi hasil"
 ```
 
-## Recommended Tables (PostgreSQL)
+## Rekomendasi Tabel (PostgreSQL)
 
-### 1. User & Access Management
+### 1. Manajemen User & Akses
 
 #### `roles`
-- `id`: UUID (PK)
+- `id`: INT (PK Auto-increment)
 - `name`: VARCHAR(50) -- admin, nazhir, wakif, mauquf_alaih
 
 #### `users`
-- `id`: UUID (PK)
+- `id`: INT (PK Auto-increment)
 - `email`: VARCHAR(255) (Unique)
 - `password`: VARCHAR(255)
-- `role_id`: UUID (FK to roles)
+- `role_id`: INT (FK to roles)
 
-### 2. Stakeholder Profiles (Pattern: Individual & Collective)
+### 2. Stakeholder (Perorangan & Kelompok)
 
-Semua stakeholder (Wakif, Nazhir, Mauquf Alaih) menggunakan pola yang sama untuk mendukung entitas **Perorangan** maupun **Kelompok/Lembaga**.
+Pola simetris untuk Wakif, Nazhir, dan Mauquf Alaih.
 
 #### `wakifs`
-- `id`: UUID (PK)
-- `name`: VARCHAR(255) -- Nama individu atau Kelompok (e.g., Pejuang Dermawan)
+- `id`: INT (PK Auto-increment)
+- `name`: VARCHAR(255) (Nama Personal/Kelompok)
 - `wakif_type`: ENUM('personal', 'collective')
-- `representative_id`: UUID (FK to users) -- PIC/Wakil utama.
+- `representative_id`: INT (FK to users) -- PIC/Wakil
 #### `wakif_members`
-- `id`: UUID (PK)
-- `wakif_id`: UUID (FK to wakifs)
-- `user_id`: UUID (FK to users)
+- `id`: INT (PK)
+- `wakif_id`: INT (FK)
+- `user_id`: INT (FK)
 
 #### `nazhirs`
-- `id`: UUID (PK)
-- `name`: VARCHAR(255) -- Nama individu atau Lembaga (e.g., Bilistiwa Pusat)
+- `id`: INT (PK Auto-increment)
+- `name`: VARCHAR(255) (Nama Personal/Lembaga)
 - `nazhir_type`: ENUM('individual', 'organization')
-- `representative_id`: UUID (FK to users) -- Penanggung Jawab utama.
+- `representative_id`: INT (FK to users) -- Penanggung Jawab
 - `location_code`: VARCHAR(50) 
-- `work_area`: VARCHAR(100) -- e.g., PUSAT
+- `work_area`: VARCHAR(100)
 #### `nazhir_members`
-- `id`: UUID (PK)
-- `nazhir_id`: UUID (FK to nazhirs)
-- `user_id`: UUID (FK to users) -- Staf atau pengurus di dalam lembaga nazhir.
+- `id`: INT (PK)
+- `nazhir_id`: INT (FK)
+- `user_id`: INT (FK)
 
 #### `mauquf_alaih`
-- `id`: UUID (PK)
-- `name`: VARCHAR(255) -- Nama individu atau Institusi (e.g., Madrasah Al-Fatih)
+- `id`: INT (PK Auto-increment)
+- `name`: VARCHAR(255)
 - `mauquf_type`: ENUM('individual', 'group_institution')
-- `representative_id`: UUID (FK to users) -- Delegasi penerima manfaat.
+- `representative_id`: INT (FK to users)
 - `description`: TEXT
 #### `mauquf_members`
-- `id`: UUID (PK)
-- `mauquf_alaih_id`: UUID (FK to mauquf_alaih)
-- `user_id`: UUID (FK to users) -- Anggota kelompok (e.g., murid di madrasah).
+- `id`: INT (PK)
+- `mauquf_alaih_id`: INT (FK)
+- `user_id`: INT (FK)
 
-### 3. Asset Classification (Hierarchical)
+### 3. Klasifikasi Aset (Hierarki Spreadsheet)
 
-#### `asset_categories`
-- `id`: UUID (PK)
-- `name`: VARCHAR(100) -- e.g., Harta Bergerak
-- `code`: VARCHAR(10) -- e.g., 02.
+#### `asset_categories`, `asset_types`, `asset_items`
+- Semua `id`: INT (PK Auto-increment)
+- Relasi FK menggunakan INT.
 
-#### `asset_types`
-- `id`: UUID (PK)
-- `category_id`: UUID (FK)
-- `name`: VARCHAR(100) -- e.g., Kendaraan
-- `code`: VARCHAR(10) -- e.g., 01.
-
-#### `asset_items`
-- `id`: UUID (PK)
-- `type_id`: UUID (FK)
-- `name`: VARCHAR(100) -- e.g., Motor
-- `code`: VARCHAR(10) -- e.g., 02.
-
-### 4. Core Asset Table (`waqf_assets`)
+### 4. Tabel Inti Aset Wakaf (`waqf_assets`)
+Tabel utama untuk jenis **Pemakaian** dan **Produktif**.
 
 | Column | Type | Description |
 | :--- | :--- | :--- |
-| `id` | UUID (PK) | Unique identifier |
-| `item_id` | UUID (FK) | Link to asset_items |
-| `wakif_id` | UUID (FK) | Link to wakifs |
-| `nazhir_id` | UUID (FK) | Link to nazhirs |
-| `mauquf_id` | UUID (FK) | Link to mauquf_alaih |
-| `asset_name` | VARCHAR | Name/Brand (e.g., Kawasaki KLX 150) |
-| `plate_number` | VARCHAR | For vehicles (e.g., B 3674 ESS) |
-| `color` | VARCHAR | Asset color |
-| `unit_count` | INT | Quantity |
-| `unit_measure`| VARCHAR | Unit, m2, etc. |
-| `waqf_date` | DATE | Tanggal Diwakafkan |
-| `semester` | VARCHAR | Semester |
-| `year` | VARCHAR | Tahun |
-| `duration_type`| VARCHAR | Abadi vs Berjangka |
-| `waqf_type` | VARCHAR | **Penggunaan** vs **Produktif** |
-| `usage_category`| VARCHAR | e.g., Wakaf Pemakaian |
-| `management_status`| VARCHAR | Status Pengelolaan |
+| `id` | INT (PK) | Auto-increment |
+| `item_id` | INT (FK) | Link ke jenis aset |
+| `wakif_id` | INT (FK) | Link ke pemberi |
+| `nazhir_id` | INT (FK) | Link ke pengelola |
+| `mauquf_id` | INT (FK) | Link ke penerima manfaat |
+| `asset_name` | VARCHAR | Nama Merk/Barang |
+| `plate_number` | VARCHAR | Nomor Plat (jika kendaraan) |
+| `color` | VARCHAR | Warna |
+| `unit_count` | INT | Jumlah |
+| `waqf_type` | VARCHAR | **Pemakaian** atau **Produktif** |
 | `estimated_value`| NUMERIC | Nilai Estimasi |
-| `barcode_code` | VARCHAR | Barcode |
-| `inventory_code`| VARCHAR | Kode Inventaris |
-| `is_complete` | BOOLEAN | Kelengkapan data |
+| `is_complete` | BOOLEAN | Kelengkapan data (Spreadsheet status) |
 
-### 5. Shigat & Management
+### 5. Shigat & Manajemen
 
 #### `asset_shigat`
-- `id`: UUID (PK)
-- `asset_id`: UUID (FK)
-- `lafadz_text`: TEXT -- Shigat (Lafadz Akad Wakaf)
-- `intended_use`: TEXT -- Tujuan Utama
-- `document_url`: VARCHAR -- Link ke Sertifikat / BPKB
+- `id`: INT (PK)
+- `asset_id`: INT (FK)
+- `lafadz_text`: TEXT -- Isi Akad
+- `document_url`: VARCHAR -- Scan Sertifikat/Dokumen
 
 #### `asset_management`
-- `id`: UUID (PK)
-- `asset_id`: UUID (FK)
-- `pic_name`: VARCHAR -- Penanggung Jawab Fisik
-- `pic_contact`: VARCHAR -- Kontak PIC
-- `condition`: VARCHAR -- Kondisi
-- `maintenance_status`: VARCHAR -- Pemeliharaan
+- `id`: INT (PK)
+- `asset_id`: INT (FK)
+- `pic_name`: VARCHAR (Penanggung Jawab Fisik)
+- `current_condition`: VARCHAR (Kondisi Saat Ini)
 
 #### `asset_media`
-- `id`: UUID (PK)
-- `asset_id`: UUID (FK)
-- `media_type`: VARCHAR -- 'initial' vs 'current'
+- `id`: INT (PK)
+- `asset_id`: INT (FK)
 - `file_url`: VARCHAR
-- `captured_at`: TIMESTAMP
+- `media_type`: VARCHAR (Awal/Update Berkala)
 
 ---
 
-## 6. Detail Wakaf Produktif (Productive Waqf)
+## 6. Pengembangan Wakaf Produktif & Cabang (Hierarchy)
 
-### `productive_businesses` (Usaha_Produktif)
-- `id`: UUID (PK)
-- `asset_id`: UUID (FK) -- Aset modal.
+Jika aset dikelola menjadi unit usaha, tabel berikut digunakan.
+
+### `productive_businesses` (Unit Usaha)
+Unit usaha dapat memiliki jenjang (Pusat & Cabang).
+- `id`: INT (PK Auto-increment)
+- `parent_id`: INT (FK to self, Nullable) -- **Hierarki Cabang**. Jika Null = Pusat.
+- `asset_id`: INT (FK to waqf_assets) -- Aset modal.
 - `business_name`: VARCHAR(255)
-- `business_type`: VARCHAR(100) -- e.g., Pertanian, Retail.
+- `location`: VARCHAR(255) -- Lokasi Spesifik Cabang.
 - `status`: ENUM('active', 'inactive')
-- `manager_name`: VARCHAR(255)
-- `start_date`: DATE
 
-### `financial_reports` (Laporan_Keuangan_Berkala)
-- `id`: UUID (PK)
-- `business_id`: UUID (FK)
-- `report_period`: VARCHAR(50) -- e.g., "Januari 2024".
-- `total_revenue`: NUMERIC
-- `total_expense`: NUMERIC
-- `net_profit`: NUMERIC
-- `report_date`: DATE
-- `document_url`: VARCHAR
+### `financial_reports` (Laporan Keuangan)
+Laporan per cabang atau per unit usaha.
+- `id`: INT (PK Auto-increment)
+- `business_id`: INT (FK)
+- `report_period`: VARCHAR(50)
+- `net_profit`: NUMERIC -- Laba Bersih yang siap dibagikan.
 
-### `benefit_distributions` (Distribusi_Manfaat)
-- `id`: UUID (PK)
-- `report_id`: UUID (FK)
-- `mauquf_alaih_id`: UUID (FK)
+### `benefit_distributions` (Penyaluran Manfaat)
+Tabel ini memetakan hasil usaha produktif kembali ke Mauquf Alaih.
+- `id`: INT (PK Auto-increment)
+- `report_id`: INT (FK)
+- `mauquf_alaih_id`: INT (FK) -- Penerima sesuai pilar inti.
 - `amount`: NUMERIC
 - `distribution_date`: DATE
-- `notes`: TEXT
-
----
-
-## Struktur Hubungan (Relationship Summary)
-
-1.  **Stakeholder Groups**: Semua stakeholder (Wakif, Nazhir, Mauquf) memiliki relasi ke `users` melalui `representative_id` (sebagai PIC) dan tabel `members` (sebagai jajaran anggota/staf).
-2.  **Asset utilization**: `waqf_assets` menghubungkan ketiga stakeholder (Wakif -> Asset -> Nazhir -> Mauquf).
-3.  **Productive flow**: Asset menumbuhkan Bisnis, Bisnis menghasilkan Laporan Laba, Laporan Laba mendasari Distribusi ke Mauquf Alaih.
